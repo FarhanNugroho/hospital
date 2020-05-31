@@ -33,7 +33,7 @@
 </template>
 
 <script>
-// import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Patient",
@@ -50,32 +50,32 @@ export default {
     ],
   }),
 
-//   computed: {
-//     ...mapGetters(["patients"]),
-//     dataset() {
-//       let dataset = this.patients;
-//       let now = new Date().getFullYear();
-//       dataset.forEach((item) => {
-//         let age = now - new Date(item.date_of_birth).getFullYear();
+  computed: {
+    ...mapGetters(["patients"]),
+    dataset() {
+      let dataset = this.patients;
+      let now = new Date().getFullYear();
+      dataset.forEach((item) => {
+        let age = now - new Date(item.date_of_birth).getFullYear();
 
-//         item.fullname = item.first_name + " " + item.last_name;
-//         item.age = age;
-//         item.date_of_birth = item.date_of_birth.substr(0, 10);
-//       });
-//       return dataset;
-//     },
-//   },
+        item.fullname = item.first_name + " " + item.last_name;
+        item.age = age;
+        item.date_of_birth = item.date_of_birth.substr(0, 10);
+      });
+      return dataset;
+    },
+  },
 
-//   created() {
-//     this.getPatients();
-//   },
+  created() {
+    this.getPatients();
+  },
 
-//   methods: {
-//     ...mapActions(["getPatients", "selectedPatient"]),
-//     viewDetail(item) {
-//       this.selectedPatient(item);
-//       this.$router.push("/patient/" + item.id);
-//     },
-//   },
+  methods: {
+    ...mapActions(["getPatients", "selectedPatient"]),
+    viewDetail(item) {
+      this.selectedPatient(item);
+      this.$router.push("/patient/" + item.id);
+    },
+  },
 };
 </script>

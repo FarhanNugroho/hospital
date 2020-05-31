@@ -155,8 +155,8 @@
 </template>
 
 <script>
-// import { mapGetters, mapActions } from "vuex";
-// import { required } from "vuelidate/lib/validators";
+import { mapGetters, mapActions } from "vuex";
+import { required } from "vuelidate/lib/validators";
 
 export default {
   name: "Hospital",
@@ -176,19 +176,17 @@ export default {
     isEdit: false,
   }),
 
-//   validations: {
-//     hospital: {
-//       hospital_id: { required },
-//       type: { required },
-//       name: { required },
-//       province: { required },
-//       city: { required },
-//       address: { required },
-//       latitude: { required },
-//       longitude: { required },
-//     },
-
-
+  validations: {
+    hospital: {
+      hospital_id: { required },
+      type: { required },
+      name: { required },
+      province: { required },
+      city: { required },
+      address: { required },
+      latitude: { required },
+      longitude: { required },
+    },
     // validationGroup: [
     //   "hospital.hospital_id",
     //   "hospital.type",
@@ -199,113 +197,108 @@ export default {
     //   "hospital.latitude",
     //   "hospital.longitude",
     // ],
+  },
 
+  computed: {
+    ...mapGetters(["hospitalTypes", "hospitals"]),
+    formTitle() {
+      return this.isEdit === false ? "New Hospital" : "Edit Hospital";
+    },
+    hospitalIdErrors() {
+      const errors = [];
+      if (!this.$v.hospital.hospital_id.$dirty) return errors;
+      !this.$v.hospital.hospital_id.required &&
+        errors.push("Hospital ID is required");
+      return errors;
+    },
+    typeErrors() {
+      const errors = [];
+      if (!this.$v.hospital.type.$dirty) return errors;
+      !this.$v.hospital.type.required && errors.push("Type is required");
+      return errors;
+    },
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.hospital.name.$dirty) return errors;
+      !this.$v.hospital.name.required && errors.push("Name is required");
+      return errors;
+    },
+    provinceErrors() {
+      const errors = [];
+      if (!this.$v.hospital.province.$dirty) return errors;
+      !this.$v.hospital.province.required &&
+        errors.push("Province is required");
+      return errors;
+    },
+    cityErrors() {
+      const errors = [];
+      if (!this.$v.hospital.city.$dirty) return errors;
+      !this.$v.hospital.city.required && errors.push("City is required");
+      return errors;
+    },
+    addressErrors() {
+      const errors = [];
+      if (!this.$v.hospital.address.$dirty) return errors;
+      !this.$v.hospital.address.required && errors.push("Address is required");
+      return errors;
+    },
+    latitudeErrors() {
+      const errors = [];
+      if (!this.$v.hospital.latitude.$dirty) return errors;
+      !this.$v.hospital.latitude.required &&
+        errors.push("Latitude is required");
+      return errors;
+    },
+    longitudeErrors() {
+      const errors = [];
+      if (!this.$v.hospital.longitude.$dirty) return errors;
+      !this.$v.hospital.longitude.required &&
+        errors.push("Longitude is required");
+      return errors;
+    },
+  },
 
-//   },
+  created() {
+    this.getHospitals();
+  },
 
+  methods: {
+    ...mapActions([
+      "getHospitals",
+      "createHospital",
+      "editHospital",
+      "deleteHospital",
+      "showDialog",
+    ]),
+    addItem() {
+      this.isEdit = false;
+      this.hospital = Object.assign({}, {});
+    },
+    editItem(item) {
+      this.isEdit = true;
+      this.hospital = Object.assign({}, item);
+      this.dialog = true;
+    },
 
+    deleteItem(item) {
+      this.showDialog({
+        title: "Delete Item",
+        text: "Confirm delete this item?",
+      }).then((confirm) => {
+        if (confirm) {
+          this.deleteHospital(item);
+        }
+      });
+    },
 
+    save() {
+      this.isEdit
+        ? this.editHospital(this.hospital)
+        : this.createHospital(this.hospital);
 
-//   computed: {
-//     ...mapGetters(["hospitalTypes", "hospitals"]),
-//     formTitle() {
-//       return this.isEdit === false ? "New Hospital" : "Edit Hospital";
-//     },
-//     hospitalIdErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.hospital_id.$dirty) return errors;
-//       !this.$v.hospital.hospital_id.required &&
-//         errors.push("Hospital ID is required");
-//       return errors;
-//     },
-//     typeErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.type.$dirty) return errors;
-//       !this.$v.hospital.type.required && errors.push("Type is required");
-//       return errors;
-//     },
-//     nameErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.name.$dirty) return errors;
-//       !this.$v.hospital.name.required && errors.push("Name is required");
-//       return errors;
-//     },
-//     provinceErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.province.$dirty) return errors;
-//       !this.$v.hospital.province.required &&
-//         errors.push("Province is required");
-//       return errors;
-//     },
-//     cityErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.city.$dirty) return errors;
-//       !this.$v.hospital.city.required && errors.push("City is required");
-//       return errors;
-//     },
-//     addressErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.address.$dirty) return errors;
-//       !this.$v.hospital.address.required && errors.push("Address is required");
-//       return errors;
-//     },
-//     latitudeErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.latitude.$dirty) return errors;
-//       !this.$v.hospital.latitude.required &&
-//         errors.push("Latitude is required");
-//       return errors;
-//     },
-//     longitudeErrors() {
-//       const errors = [];
-//       if (!this.$v.hospital.longitude.$dirty) return errors;
-//       !this.$v.hospital.longitude.required &&
-//         errors.push("Longitude is required");
-//       return errors;
-//     },
-//   },
-
-//   created() {
-//     this.getHospitals();
-//   },
-
-//   methods: {
-//     ...mapActions([
-//       "getHospitals",
-//       "createHospital",
-//       "editHospital",
-//       "deleteHospital",
-//       "showDialog",
-//     ]),
-//     addItem() {
-//       this.isEdit = false;
-//       this.hospital = Object.assign({}, {});
-//     },
-//     editItem(item) {
-//       this.isEdit = true;
-//       this.hospital = Object.assign({}, item);
-//       this.dialog = true;
-//     },
-
-//     deleteItem(item) {
-//       this.showDialog({
-//         title: "Delete Item",
-//         text: "Confirm delete this item?",
-//       }).then((confirm) => {
-//         if (confirm) {
-//           this.deleteHospital(item);
-//         }
-//       });
-//     },
-
-//     save() {
-//       this.isEdit
-//         ? this.editHospital(this.hospital)
-//         : this.createHospital(this.hospital);
-
-//       this.hospital = {};
-//       this.dialog = false;
-//     },
-//   },
+      this.hospital = {};
+      this.dialog = false;
+    },
+  },
 };
 </script>
