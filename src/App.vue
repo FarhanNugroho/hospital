@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- Navigation Drawer -->
-    <v-navigation-drawer v-if="true" v-model="drawer" app clipped>
+    <v-navigation-drawer v-if="token" v-model="drawer" app clipped>
       <v-list dense nav>
         <v-list-item-group v-model="item" color="primary">
           <div v-for="item in items" :key="item.title">
@@ -51,7 +51,7 @@
     </v-navigation-drawer>
 
     <!-- Application Bar -->
-    <v-app-bar v-if="true" app color="primary" dark clipped-left clipped-right>
+    <v-app-bar v-if="token" app color="primary" dark clipped-left clipped-right>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title style="min-width:150px">Hospital Apps</v-toolbar-title>
       <v-spacer />
@@ -79,13 +79,26 @@
     </v-content>
 
     <!-- Utils -->
-
+    <Loading></Loading>
+    <Snackbar></Snackbar>
+    <Dialog></Dialog>
   </v-app>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+import Loading from "./components/Loading";
+import Snackbar from "./components/Snackbar";
+import Dialog from "./components/Dialog";
+
 export default {
   name: "App",
+
+  components: {
+    Loading,
+    Snackbar,
+    Dialog,
+  },
 
   data: () => ({
     drawer: null,
@@ -115,6 +128,14 @@ export default {
       },
     ],
   }),
+
+  methods: {
+    ...mapActions(["logout"]),
+  },
+
+  computed: {
+    ...mapGetters(["token"]),
+  },
 };
 </script>
 

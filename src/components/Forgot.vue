@@ -40,7 +40,43 @@
 </template>
 
 <script>
+import { required, email } from "vuelidate/lib/validators";
+import axios from "axios";
+
 export default {
-        
-}
+  data: () => ({
+    email: "",
+  }),
+
+  validations: {
+    email: {
+      required,
+      email,
+      available: (val) => {
+        if (val === "") return true;
+        return axios.get("user/test").then((res) => {
+          console.log(res);
+          return true;
+        });
+      },
+    },
+  },
+
+  computed: {
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("Must be valid e-mail");
+      !this.$v.email.required && errors.push("E-mail is required");
+      !this.$v.email.available && errors.push("E-mail is not available");
+      return errors;
+    },
+  },
+
+  methods: {
+    reset() {
+      this.$router.push("/login");
+    },
+  },
+};
 </script>
